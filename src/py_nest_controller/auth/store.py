@@ -1,7 +1,8 @@
 """Default in memory ``TokenStore``.
 
-Tokens are lost when the process exits, which is fine because the refresh
-token always comes from settings and a new access token is one call away.
+Tokens are lost when the process exits, including the refresh token. Use it
+for tests, or for runs seeded from ``NEST_REFRESH_TOKEN``. For real use, swap in
+a persistent ``TokenStore`` (for example keyring) so the refresh token survives.
 """
 
 from py_nest_controller.auth.protocols import TokenStore

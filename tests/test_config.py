@@ -10,8 +10,8 @@ def test_load_settings_reads_nest_prefixed_env(monkeypatch: pytest.MonkeyPatch) 
 
 
 @pytest.mark.skip(reason="Not implemented yet")
-def test_load_settings_missing_refresh_token_raises(monkeypatch: pytest.MonkeyPatch) -> None:
-    """A missing ``NEST_REFRESH_TOKEN`` raises ``ConfigurationError`` naming the variable."""
+def test_load_settings_without_refresh_token_succeeds(monkeypatch: pytest.MonkeyPatch) -> None:
+    """``NEST_REFRESH_TOKEN`` is optional; when unset ``refresh_token`` is ``None``."""
     raise NotImplementedError("To be implemented by developer")
 
 

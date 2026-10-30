@@ -103,9 +103,13 @@ are being discontinued and integrations must move to a self hosted topic before
 November 30, 2026. See
 https://developers.google.com/nest/device-access/api/events.
 
-**Persistent token storage.** Implement the `TokenStore` Protocol (for example
-a file, keyring, or database store) and pass it to `OAuthTokenManager`. The
-manager does not change. The default is `InMemoryTokenStore`.
+**Persistent token storage.** The `TokenStore` owns the refresh token.
+`nest-auth exchange` writes it there and `OAuthTokenManager` reads it from
+there, preferring the stored value over the optional `NEST_REFRESH_TOKEN` seed,
+which is only used while the store is empty. To persist tokens, implement the
+`TokenStore` Protocol (for example a keyring, file, or database store) and pass
+it to both `OAuthTokenManager` and `nest-auth`'s `main(store=...)`. Neither
+changes. The default is `InMemoryTokenStore`, which forgets everything on exit.
 
 **Multiple devices.** `Thermostat` wraps exactly one device ID. Several
 thermostats share one `SDMClient` (one HTTP pool, one token manager). Use
@@ -128,12 +132,13 @@ Each step ends with something you can run against your real thermostat.
 
 1. **Config.** `config.load_settings()` and `OAuthClientSettings`. Fill in
    `.env` with the client ID, client secret, and Device Access project ID.
-   Check: `load_settings()` raises `ConfigurationError` naming the missing
-   refresh token.
+   Check: `load_settings()` raises `ConfigurationError` naming any missing
+   client variable, and succeeds with `refresh_token=None` when no seed is set.
 2. **One time OAuth setup.** `auth/onboarding.build_authorization_url()`, then
    `exchange_authorization_code()`, then the `nest-auth` CLI. Run
    `uv run nest-auth url`, approve in the browser, copy the `code`, run
-   `uv run nest-auth exchange <code>`, and put the refresh token in `.env`.
+   `uv run nest-auth exchange <code>`. Until a persistent store exists, put
+   the printed refresh token in `.env` as the `NEST_REFRESH_TOKEN` seed.
    The docs say authorization is not complete until a `devices.list` call is
    made with the new token, so step 4 finishes it.
 3. **Token manager.** `InMemoryTokenStore`, then `OAuthTokenManager` (refresh,

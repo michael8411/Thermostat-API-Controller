@@ -10,8 +10,14 @@ def test_url_command_prints_authorization_url(capsys: pytest.CaptureFixture[str]
 
 
 @pytest.mark.skip(reason="Not implemented yet")
-def test_exchange_command_prints_refresh_token(capsys: pytest.CaptureFixture[str]) -> None:
-    """``nest-auth exchange CODE`` prints the refresh token line for .env."""
+def test_exchange_without_store_prints_refresh_token(capsys: pytest.CaptureFixture[str]) -> None:
+    """With ``store=None``, ``exchange`` prints the refresh token once as a seed."""
+    raise NotImplementedError("To be implemented by developer")
+
+
+@pytest.mark.skip(reason="Not implemented yet")
+def test_exchange_with_store_saves_tokens(capsys: pytest.CaptureFixture[str]) -> None:
+    """With a store, ``exchange`` saves ``OAuthTokens`` and never prints the refresh token."""
     raise NotImplementedError("To be implemented by developer")
 
 

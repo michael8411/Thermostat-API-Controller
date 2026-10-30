@@ -5,8 +5,11 @@ Two classes exist on purpose:
 - ``OAuthClientSettings`` holds what the one time setup needs: the OAuth client
   and the Device Access project ID. The ``nest-auth`` CLI uses it before a
   refresh token exists.
-- ``NestSettings`` adds the refresh token and optional values. Everything else
-  in the SDK uses it.
+- ``NestSettings`` adds optional values. Everything else in the SDK uses it.
+
+The refresh token is not a setting. It lives in a ``TokenStore``, which
+``nest-auth exchange`` writes and ``OAuthTokenManager`` reads. ``NEST_REFRESH_TOKEN``
+is only an optional seed for an empty store (first run, CI, a container).
 
 Two different "project IDs" exist in this world and the field names keep them
 apart: ``device_access_project_id`` (a UUID from the Device Access Console, used
@@ -60,7 +63,8 @@ class NestSettings(OAuthClientSettings):
     """Full runtime settings for the SDK.
 
     Environment variables (in addition to ``OAuthClientSettings``):
-        NEST_REFRESH_TOKEN: Refresh token printed by ``nest-auth exchange``.
+        NEST_REFRESH_TOKEN: Optional seed refresh token. Used only when the
+            ``TokenStore`` is empty. The store is the source of truth.
         NEST_DEFAULT_DEVICE_ID: Optional bare device ID to use when none is given.
         NEST_GCP_PROJECT_ID: Optional Google Cloud project ID. Only needed for
             future Pub/Sub events; nothing reads it today.
@@ -68,7 +72,7 @@ class NestSettings(OAuthClientSettings):
     Source: https://developers.google.com/nest/device-access/authorize
     """
 
-    refresh_token: SecretStr
+    refresh_token: SecretStr | None = None
     default_device_id: str | None = None
     gcp_project_id: str | None = Field(default=None, pattern=GCP_PROJECT_ID_PATTERN)
 

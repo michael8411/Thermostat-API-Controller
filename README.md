@@ -44,7 +44,9 @@ focused on the Nest Thermostat E. See `docs/ARCHITECTURE.md` for the design.
    uv run nest-auth exchange PASTE_CODE_HERE
    ```
 
-   Put the printed refresh token into `NEST_REFRESH_TOKEN` in `.env`.
+   With a persistent `TokenStore` wired in, the tokens are saved there and
+   nothing is printed. Until then the refresh token is printed once; put it in
+   `NEST_REFRESH_TOKEN` in `.env` as a seed for the empty store.
 
 6. Check the toolchain:
 
