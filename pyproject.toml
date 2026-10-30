@@ -1,0 +1,74 @@
+[project]
+name = "py-nest-controller"
+version = "0.1.0"
+description = "Typed async Python SDK for the Google Smart Device Management (SDM) API, focused on Nest thermostats."
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "httpx>=0.28.1,<1.0",
+    "pydantic>=2.11,<3",
+    "pydantic-settings>=2.10,<3",
+]
+
+[project.scripts]
+nest-auth = "py_nest_controller.auth.cli:main"
+
+[dependency-groups]
+dev = [
+    "mypy>=1.17",
+    "pytest>=8.4",
+    "pytest-asyncio>=1.1",
+    "respx>=0.22",
+    "ruff>=0.12",
+]
+
+[build-system]
+requires = ["uv_build>=0.8.0,<0.14"]
+build-backend = "uv_build"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["src", "tests"]
+
+[tool.ruff.lint]
+select = [
+    "E",
+    "W",
+    "F",
+    "I",
+    "N",
+    "D",
+    "UP",
+    "B",
+    "SIM",
+    "RUF",
+    "ANN",
+    "ASYNC",
+    "PT",
+]
+
+[tool.ruff.lint.pydocstyle]
+convention = "google"
+
+[tool.ruff.lint.isort]
+known-first-party = ["py_nest_controller"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["src", "tests"]
+mypy_path = "src"
+plugins = ["pydantic.mypy"]
+warn_unreachable = true
+
+[tool.pydantic-mypy]
+init_forbid_extra = true
+init_typed = true
+warn_required_dynamic_aliases = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = ["-ra", "--strict-markers", "--strict-config"]
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
